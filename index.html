@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Luxury Booking</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS ดีไซน์เดิม --- */
+        :root { --primary: #00f260; --secondary: #0575E6; --dark-bg: #0f0c29; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); --text: #ffffff; --text-muted: #a0a0a0; }
+        body { font-family: 'Outfit', 'Kanit', sans-serif; margin: 0; padding: 0; background: linear-gradient(to right, #24243e, #302b63, #0f0c29); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        .bg-circle { position: fixed; border-radius: 50%; filter: blur(80px); z-index: -1; animation: float 10s infinite ease-in-out; }
+        .c1 { width: 300px; height: 300px; background: #0575E6; top: -50px; left: -50px; opacity: 0.4; }
+        .c2 { width: 400px; height: 400px; background: #00f260; bottom: -100px; right: -100px; opacity: 0.2; animation-delay: 2s; }
+        @keyframes float { 0% { transform: translate(0, 0); } 50% { transform: translate(20px, 30px); } 100% { transform: translate(0, 0); } }
+        .container { max-width: 500px; margin: 20px auto; padding: 30px; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .user-header { display: flex; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+        .user-avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary); box-shadow: 0 0 15px rgba(0, 242, 96, 0.4); margin-right: 15px; object-fit: cover; }
+        .welcome-text small { display: block; color: var(--text-muted); font-size: 0.9em; }
+        .welcome-text strong { font-size: 1.2em; letter-spacing: 0.5px; }
+        h2 { text-align: center; font-weight: 600; margin-bottom: 10px; background: linear-gradient(to right, #00f260, #0575E6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-transform: uppercase;}
+        .form-group { margin-bottom: 20px; position: relative; }
+        label { font-size: 0.9em; color: var(--text-muted); margin-bottom: 8px; display: block; font-weight: 300; }
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
+        input { width: 100%; padding: 15px 15px 15px 45px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; color: white; font-family: 'Kanit', sans-serif; font-size: 16px; transition: all 0.3s; box-sizing: border-box; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 242, 96, 0.2); outline: none; background: rgba(0,0,0,0.5); }
+        ::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
+        .room-selector { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
+        .room-card { min-width: 140px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 10px; cursor: pointer; transition: all 0.3s; text-align: center; }
+        .room-card img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+        .room-card h4 { margin: 5px 0; font-size: 0.9em; }
+        .room-card p { margin: 0; font-size: 0.8em; color: var(--primary); }
+        .room-card.selected { border-color: var(--primary); background: rgba(0, 242, 96, 0.1); box-shadow: 0 0 20px rgba(0, 242, 96, 0.2); transform: translateY(-3px); }
+        .btn-submit { width: 100%; padding: 18px; background: linear-gradient(90deg, #00f260, #0575E6); border: none; border-radius: 50px; color: white; font-size: 18px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 30px rgba(5, 117, 230, 0.4); }
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:disabled { background: #555; box-shadow: none; cursor: not-allowed; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+<div class="bg-circle c1"></div>
+<div class="bg-circle c2"></div>
+
+<div class="container animate__animated animate__fadeInUp">
+    <div class="user-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="userAvatar" class="user-avatar">
+        <div class="welcome-text">
+            <small>ยินดีต้อนรับ,</small>
+            <strong id="displayName">Guest User</strong>
+        </div>
+    </div>
+
+    <h2>BOOK YOUR STAY</h2>
+    <p style="text-align:center; color: var(--text-muted); font-size:0.9em; margin-bottom:25px;">เลือกห้องพักที่คุณต้องการ</p>
+
+    <label>เลือกประเภทห้องพัก:</label>
+    <div class="room-selector">
+        <div class="room-card selected" onclick="selectRoom(this, 'Standard Room')" data-img="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800">
+            <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&q=80">
+            <h4>Standard</h4>
+            <p>฿1,500</p>
+        </div>
+        <div class="room-card" onclick="selectRoom(this, 'Deluxe View')" data-img="https://images.unsplash.com/photo-1590490360182-f33efe80a713?w=800">
+            <img src="https://images.unsplash.com/photo-1590490360182-f33efe80a713?w=400&q=80">
+            <h4>Deluxe</h4>
+            <p>฿2,500</p>
+        </div>
+        <div class="room-card" onclick="selectRoom(this, 'Pool Villa')" data-img="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800">
+            <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&q=80">
+            <h4>Villa</h4>
+            <p>฿4,500</p>
+        </div>
+    </div>
+    <input type="hidden" id="selectedRoom" value="Standard Room">
+    <input type="hidden" id="selectedRoomImg" value="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800">
+
+    <div id="bookingForm">
+        <div class="form-group">
+            <label>ชื่อผู้จอง</label>
+            <div class="input-wrapper">
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" id="guestName" placeholder="ชื่อ-นามสกุล">
+            </div>
+        </div>
+
+        <div style="display:flex; gap:15px;">
+            <div class="form-group" style="flex:1;">
+                <label>เช็คอิน</label>
+                <div class="input-wrapper">
+                    <input type="date" id="checkIn" style="padding-left:15px;">
+                </div>
+            </div>
+            <div class="form-group" style="flex:1;">
+                <label>เช็คเอาท์</label>
+                <div class="input-wrapper">
+                    <input type="date" id="checkOut" style="padding-left:15px;">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>เบอร์โทรติดต่อ</label>
+            <div class="input-wrapper">
+                <i class="fas fa-phone input-icon"></i>
+                <input type="tel" id="phone" placeholder="08x-xxx-xxxx">
+            </div>
+        </div>
+
+        <button onclick="submitBooking()" id="submitBtn" class="btn-submit">
+            ยืนยันการจอง <i class="fas fa-arrow-right" style="margin-left:10px;"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+    // --- CONFIGURATION ---
+    const LIFF_ID = "2008913218-CtwwqM6k"; 
+    const SUPABASE_URL = "https://gaoukdnqgawneihdqomq.supabase.co"; 
+    // ใส่ Key เดิมของคุณตรงนี้ (ผมซ่อนไว้ตามที่คุณทำมา)
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdhb3VrZG5xZ2F3bmVpaGRxb21xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzMTgwMDEsImV4cCI6MjA4Mzg5NDAwMX0.6w6gsCsFSztylN-Fbteiwd9ETGrJ65fHCQY6hlEAsdY"; 
+    
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPjRP1TH1VwGbqJVTKDha9fyE7BWZUqka_AvZko0dNrMgfeYrrQllRjWQybiM6d1Hk/exec";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let userProfile = null;
+
+    async function main() {
+        try {
+            await liff.init({ liffId: LIFF_ID });
+            if (!liff.isLoggedIn()) {
+                liff.login();
+                return;
+            }
+            userProfile = await liff.getProfile();
+            if(userProfile.pictureUrl) document.getElementById("userAvatar").src = userProfile.pictureUrl;
+            document.getElementById("displayName").innerText = userProfile.displayName;
+            document.getElementById("guestName").value = userProfile.displayName;
+        } catch (err) { console.error(err); }
+    }
+    main();
+
+    function selectRoom(element, roomName) {
+        document.querySelectorAll('.room-card').forEach(card => card.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('selectedRoom').value = roomName;
+        // เก็บ URL รูปภาพของห้องที่เลือก
+        document.getElementById('selectedRoomImg').value = element.getAttribute('data-img');
+    }
+
+    async function submitBooking() {
+        const guestName = document.getElementById("guestName").value;
+        const checkIn = document.getElementById("checkIn").value;
+        const checkOut = document.getElementById("checkOut").value;
+        const phone = document.getElementById("phone").value;
+        const roomType = document.getElementById("selectedRoom").value;
+        const roomImgUrl = document.getElementById('selectedRoomImg').value;
+        const btn = document.getElementById("submitBtn");
+
+        if(!guestName || !checkIn || !checkOut || !phone) {
+            Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณากรอกให้ครบทุกช่องครับ', background: '#1a1a2e', color: '#fff', confirmButtonColor: '#f39c12' });
+            return;
+        }
+
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังประมวลผล...';
+        btn.disabled = true;
+
+        const randomNum = Math.floor(100000 + Math.random() * 900000);
+        const bookingId = "BK-" + randomNum;
+
+        const { error } = await supabaseClient.from('bookings').insert([{ 
+            user_id: userProfile ? userProfile.userId : 'web-user',
+            display_name: guestName, check_in: checkIn, check_out: checkOut, phone: phone,
+            booking_id: bookingId, room_type: roomType
+        }]);
+
+        if (error) {
+            Swal.fire({ icon: 'error', title: 'Error', text: error.message });
+            btn.innerHTML = 'ยืนยันการจอง <i class="fas fa-arrow-right"></i>';
+            btn.disabled = false;
+        } else {
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bookingId: bookingId, userId: userProfile ? userProfile.userId : 'web-test', name: guestName, phone: phone, checkIn: checkIn, checkOut: checkOut, room: roomType })
+            }).catch(err => console.error("Notify Error", err));
+
+            // ✅✅✅ ส่วนที่อัปเกรดดีไซน์ Flex Message ✅✅✅
+            if (userProfile) {
+                try {
+                    await liff.sendMessages([{
+                        type: 'flex',
+                        altText: 'ยืนยันการจอง ' + bookingId,
+                        contents: {
+                            "type": "bubble",
+                            "hero": { "type": "image", "url": roomImgUrl, "size": "full", "aspectRatio": "20:13", "aspectMode": "cover" },
+                            "body": {
+                                "type": "box", "layout": "vertical", "paddingAll": "0px",
+                                "contents": [
+                                    {
+                                        "type": "box", "layout": "vertical", "contents": [
+                                            { "type": "text", "text": "BOOKING CONFIRMED", "weight": "bold", "color": "#FFFFFF", "size": "lg" },
+                                            { "type": "text", "text": "Booking ID: " + bookingId, "color": "#FFFFFFcc", "size": "sm", "margin": "sm" }
+                                        ], "paddingAll": "lg",
+                                        "background": { "type": "linearGradient", "angle": "90deg", "startColor": "#00f260", "endColor": "#0575E6" }
+                                    },
+                                    {
+                                        "type": "box", "layout": "vertical", "paddingAll": "lg", "spacing": "md",
+                                        "contents": [
+                                            { "type": "text", "text": roomType, "weight": "bold", "size": "xl", "color": "#333333" },
+                                            { "type": "separator" },
+                                            { "type": "box", "layout": "vertical", "spacing": "sm", "contents": [
+                                                { "type": "box", "layout": "baseline", "contents": [{ "type": "icon", "url": "https://cdn-icons-png.flaticon.com/512/1077/1077114.png", "size": "sm", "color": "#aaaaaa" }, { "type": "text", "text": guestName, "color": "#333333", "size": "sm", "margin": "md", "flex": 1 }] },
+                                                { "type": "box", "layout": "baseline", "contents": [{ "type": "icon", "url": "https://cdn-icons-png.flaticon.com/512/597/597177.png", "size": "sm", "color": "#aaaaaa" }, { "type": "text", "text": phone, "color": "#333333", "size": "sm", "margin": "md", "flex": 1 }] },
+                                                { "type": "box", "layout": "baseline", "contents": [{ "type": "icon", "url": "https://cdn-icons-png.flaticon.com/512/2693/2693507.png", "size": "sm", "color": "#aaaaaa" }, { "type": "text", "text": `${checkIn} - ${checkOut}`, "color": "#333333", "size": "sm", "margin": "md", "flex": 1 }] }
+                                            ]}
+                                        ]
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box", "layout": "vertical", "contents": [
+                                    { "type": "text", "text": "ขอบคุณที่ใช้บริการครับ 🙏", "size": "xs", "color": "#aaaaaa", "align": "center" }
+                                ], "paddingAll": "md", "backgroundColor": "#f0f0f0"
+                            }
+                        }
+                    }]);
+                } catch (err) { console.error("LIFF Send Error", err); }
+            }
+
+            Swal.fire({
+                icon: 'success', title: 'จองสำเร็จ!', html: `รหัสรายการ: <b style="color:#00f260; font-size:1.2em;">${bookingId}</b><br>ส่งใบยืนยันเข้าแชทเรียบร้อยแล้วครับ`, background: '#1a1a2e', color: '#fff', timer: 3000, showConfirmButton: false
+            }).then(() => { liff.closeWindow(); });
+        }
+    }
+</script>
+</body>
+</html>
