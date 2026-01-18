@@ -170,143 +170,41 @@
             if (userProfile) {
                 try {
                     await liff.sendMessages([{
-  type: "flex",
-  altText: `ใบยืนยันการจอง ${bookingId}`,
-  contents: {
-    type: "bubble",
-    size: "mega",
-
-    hero: {
-      type: "image",
-      url: roomImgUrl,
-      size: "full",
-      aspectRatio: "20:13",
-      aspectMode: "cover"
-    },
-
-    body: {
-      type: "box",
-      layout: "vertical",
-      paddingAll: "0px",
-      contents: [
-
-        // ===== HEADER =====
-        {
-          type: "box",
-          layout: "vertical",
-          paddingAll: "lg",
-          backgroundColor: "#00C853",
-          contents: [
-            {
-              type: "text",
-              text: "ORDER RECEIVED",
-              weight: "bold",
-              color: "#FFFFFF",
-              size: "lg"
-            },
-            {
-              type: "text",
-              text: `ID: ${bookingId}`,
-              color: "#E8F5E9",
-              size: "sm",
-              margin: "sm"
-            }
-          ]
-        },
-
-        // ===== CONTENT =====
-        {
-          type: "box",
-          layout: "vertical",
-          paddingAll: "lg",
-          spacing: "md",
-          contents: [
-            {
-              type: "text",
-              text: roomType,
-              weight: "bold",
-              size: "xl",
-              color: "#212121"
-            },
-
-            { type: "separator" },
-
-            {
-              type: "box",
-              layout: "vertical",
-              spacing: "sm",
-              contents: [
-                infoRow("ผู้จอง", guestName),
-                infoRow("วันที่เข้าพัก", `${checkIn} - ${checkOut}`),
-                infoRow("เบอร์ติดต่อ", phone)
-              ]
-            },
-
-            {
-              type: "box",
-              layout: "vertical",
-              margin: "lg",
-              paddingAll: "md",
-              backgroundColor: "#FFFDE7",
-              cornerRadius: "md",
-              contents: [
-                {
-                  type: "text",
-                  text: "⏳ สถานะ: รอพนักงานตรวจสอบ",
-                  size: "sm",
-                  weight: "bold",
-                  color: "#F57F17",
-                  align: "center"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-
-    footer: {
-      type: "box",
-      layout: "vertical",
-      paddingAll: "md",
-      backgroundColor: "#F5F5F5",
-      contents: [
-        {
-          type: "text",
-          text: "กรุณาแสดงหน้านี้ต่อเจ้าหน้าที่เพื่อยืนยันการจอง",
-          size: "xs",
-          color: "#757575",
-          align: "center"
-        }
-      ]
-    }
-  }
-}]);
-
-function infoRow(label, value) {
-  return {
-    type: "box",
-    layout: "baseline",
-    contents: [
-      {
-        type: "text",
-        text: label,
-        size: "sm",
-        color: "#9E9E9E",
-        flex: 3
-      },
-      {
-        type: "text",
-        text: value,
-        size: "sm",
-        color: "#212121",
-        flex: 5,
-        wrap: true
-      }
-    ]
-  };
-}
-
+                        type: 'flex',
+                        altText: 'ใบยืนยันการจอง ' + bookingId,
+                        contents: {
+                            "type": "bubble",
+                            "hero": { "type": "image", "url": roomImgUrl, "size": "full", "aspectRatio": "20:13", "aspectMode": "cover" },
+                            "body": {
+                                "type": "box", "layout": "vertical", "paddingAll": "0px",
+                                "contents": [
+                                    {
+                                        "type": "box", "layout": "vertical", "contents": [
+                                            { "type": "text", "text": "ORDER RECEIVED", "weight": "bold", "color": "#FFFFFF", "size": "xl" },
+                                            { "type": "text", "text": "ID: " + bookingId, "color": "#FFFFFFcc", "size": "sm", "margin": "sm" }
+                                        ], "paddingAll": "lg",
+                                        "background": { "type": "linearGradient", "angle": "90deg", "startColor": "#00f260", "endColor": "#0575E6" }
+                                    },
+                                    {
+                                        "type": "box", "layout": "vertical", "paddingAll": "lg", "spacing": "md",
+                                        "contents": [
+                                            { "type": "text", "text": roomType, "weight": "bold", "size": "xxl", "color": "#333333" },
+                                            { "type": "separator" },
+                                            { "type": "box", "layout": "vertical", "spacing": "sm", "contents": [
+                                                { "type": "box", "layout": "baseline", "contents": [{ "type": "text", "text": "ผู้จอง:", "color": "#aaaaaa", "size": "sm", "flex": 2 }, { "type": "text", "text": guestName, "color": "#333333", "size": "sm", "flex": 4 }] },
+                                                { "type": "box", "layout": "baseline", "contents": [{ "type": "text", "text": "วันที่:", "color": "#aaaaaa", "size": "sm", "flex": 2 }, { "type": "text", "text": `${checkIn} - ${checkOut}`, "color": "#333333", "size": "sm", "flex": 4 }] }
+                                            ]}
+                                        ]
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box", "layout": "vertical", "contents": [
+                                    { "type": "text", "text": "โปรดแสดงหน้านี้ต่อเจ้าหน้าที่เพื่อยืนยัน", "size": "xs", "color": "#aaaaaa", "align": "center" }
+                                ], "paddingAll": "md", "backgroundColor": "#f0f0f0"
+                            }
+                        }
+                    }]);
                 } catch (err) { console.error("LIFF Send Error", err); }
             }
 
