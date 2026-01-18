@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Luxury Booking</title>
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -13,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        /* ดีไซน์พื้นฐาน */
+        /* CSS เดิม */
         :root { --primary: #00f260; --secondary: #0575E6; --dark-bg: #0f0c29; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); --text: #ffffff; --text-muted: #a0a0a0; }
         body { font-family: 'Outfit', 'Kanit', sans-serif; margin: 0; padding: 0; background: linear-gradient(to right, #24243e, #302b63, #0f0c29); color: var(--text); min-height: 100vh; overflow-x: hidden; }
         .bg-circle { position: fixed; border-radius: 50%; filter: blur(80px); z-index: -1; animation: float 10s infinite ease-in-out; }
@@ -27,7 +26,6 @@
         .welcome-text strong { font-size: 1.2em; letter-spacing: 0.5px; }
         h2 { text-align: center; font-weight: 600; margin-bottom: 10px; background: linear-gradient(to right, #00f260, #0575E6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-transform: uppercase;}
         
-        /* Input & Form */
         .form-group { margin-bottom: 20px; position: relative; }
         label { font-size: 0.9em; color: var(--text-muted); margin-bottom: 8px; display: block; font-weight: 300; }
         .input-wrapper { position: relative; }
@@ -36,15 +34,27 @@
         input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(0, 242, 96, 0.2); outline: none; background: rgba(0,0,0,0.5); }
         ::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
         
-        /* Room Selection Cards */
+        /* Room Cards */
         .room-selector { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
         .room-card { min-width: 140px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 10px; cursor: pointer; transition: all 0.3s; text-align: center; }
         .room-card img { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
         .room-card h4 { margin: 5px 0; font-size: 0.9em; }
         .room-card p { margin: 0; font-size: 0.8em; color: var(--primary); }
         .room-card.selected { border-color: var(--primary); background: rgba(0, 242, 96, 0.1); box-shadow: 0 0 20px rgba(0, 242, 96, 0.2); transform: translateY(-3px); }
-        
-        /* Button */
+
+        /* Add-on Section (หมูกระทะ) */
+        .addon-section { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .addon-info h4 { margin: 0; font-size: 1em; }
+        .addon-info p { margin: 0; font-size: 0.8em; color: var(--primary); }
+        .counter { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 30px; border: 1px solid var(--border); }
+        .counter-btn { background: none; border: none; color: white; font-size: 1.2em; cursor: pointer; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
+        .counter-btn:hover { background: rgba(255,255,255,0.1); }
+        #mookataQty { font-weight: bold; font-size: 1.1em; width: 20px; text-align: center; }
+
+        /* Total Price */
+        .total-bar { text-align: right; margin-bottom: 20px; font-size: 1.2em; border-top: 1px solid var(--border); padding-top: 15px; }
+        .total-price { color: var(--primary); font-weight: bold; font-size: 1.4em; }
+
         .btn-submit { width: 100%; padding: 18px; background: linear-gradient(90deg, #00f260, #0575E6); border: none; border-radius: 50px; color: white; font-size: 18px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 30px rgba(5, 117, 230, 0.4); }
         .btn-submit:disabled { background: #555; box-shadow: none; cursor: not-allowed; opacity: 0.7; }
     </style>
@@ -64,27 +74,42 @@
     </div>
 
     <h2>BOOK YOUR STAY</h2>
-    <p style="text-align:center; color: var(--text-muted); font-size:0.9em; margin-bottom:25px;">เลือกห้องพักที่คุณต้องการ</p>
+    <p style="text-align:center; color: var(--text-muted); font-size:0.9em; margin-bottom:25px;">เลือกห้องพักและบริการเสริม</p>
 
     <label>เลือกประเภทห้องพัก:</label>
     <div class="room-selector">
-        <div class="room-card selected" onclick="selectRoom(this, 'Standard Room')" data-img="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800">
+        <div class="room-card selected" onclick="selectRoom(this, 'Standard Room', 1500)" data-img="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800">
             <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&q=80">
             <h4>Standard</h4>
             <p>฿1,500</p>
         </div>
-        <div class="room-card" onclick="selectRoom(this, 'Deluxe View')" data-img="https://images.unsplash.com/photo-1590490360182-f33efe80a713?w=800">
+        <div class="room-card" onclick="selectRoom(this, 'Deluxe View', 2500)" data-img="https://images.unsplash.com/photo-1590490360182-f33efe80a713?w=800">
             <img src="https://images.unsplash.com/photo-1590490360182-f33efe80a713?w=400&q=80">
             <h4>Deluxe</h4>
             <p>฿2,500</p>
         </div>
-        <div class="room-card" onclick="selectRoom(this, 'Pool Villa')" data-img="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800">
+        <div class="room-card" onclick="selectRoom(this, 'Pool Villa', 4500)" data-img="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800">
             <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&q=80">
             <h4>Villa</h4>
             <p>฿4,500</p>
         </div>
     </div>
+    
+    <label style="margin-top:15px;">บริการเสริม:</label>
+    <div class="addon-section">
+        <div class="addon-info">
+            <h4>🥩 ชุดหมูกระทะ</h4>
+            <p>ชุดละ ฿499</p>
+        </div>
+        <div class="counter">
+            <button class="counter-btn" onclick="updateMookata(-1)">-</button>
+            <span id="mookataQty">0</span>
+            <button class="counter-btn" onclick="updateMookata(1)">+</button>
+        </div>
+    </div>
+
     <input type="hidden" id="selectedRoom" value="Standard Room">
+    <input type="hidden" id="selectedRoomPrice" value="1500">
     <input type="hidden" id="selectedRoomImg" value="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800">
 
     <div id="bookingForm">
@@ -94,6 +119,11 @@
             <div class="form-group" style="flex:1;"><label>เช็คเอาท์</label><div class="input-wrapper"><input type="date" id="checkOut" style="padding-left:15px;"></div></div>
         </div>
         <div class="form-group"><label>เบอร์โทรติดต่อ</label><div class="input-wrapper"><i class="fas fa-phone input-icon"></i><input type="tel" id="phone" placeholder="08x-xxx-xxxx"></div></div>
+        
+        <div class="total-bar">
+            ยอดรวมสุทธิ: <span id="totalPriceDisplay" class="total-price">฿1,500</span>
+        </div>
+
         <button onclick="submitBooking()" id="submitBtn" class="btn-submit">ยืนยันการจอง <i class="fas fa-arrow-right"></i></button>
     </div>
 </div>
@@ -104,10 +134,11 @@
     // ใส่ Key เดิมของคุณตรงนี้ (ผมซ่อนไว้ตามที่คุณทำมา)
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdhb3VrZG5xZ2F3bmVpaGRxb21xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzMTgwMDEsImV4cCI6MjA4Mzg5NDAwMX0.6w6gsCsFSztylN-Fbteiwd9ETGrJ65fHCQY6hlEAsdY"; 
     
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPjRP1TH1VwGbqJVTKDha9fyE7BWZUqka_AvZko0dNrMgfeYrrQllRjWQybiM6d1Hk/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQhku7Toa6FHMhXj80rDJI0k0MrfQv5zNee2K9blzWeupxDWemNz9SnV3FcfqlzqrV/exec"; // ใช้ URL เดิมได้
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let userProfile = null;
+    let mookataCount = 0;
 
     async function main() {
         try {
@@ -121,11 +152,31 @@
     }
     main();
 
-    function selectRoom(element, roomName) {
+    // เลือกห้องพัก
+    function selectRoom(element, roomName, price) {
         document.querySelectorAll('.room-card').forEach(card => card.classList.remove('selected'));
         element.classList.add('selected');
         document.getElementById('selectedRoom').value = roomName;
+        document.getElementById('selectedRoomPrice').value = price;
         document.getElementById('selectedRoomImg').value = element.getAttribute('data-img');
+        calculateTotal();
+    }
+
+    // ปรับจำนวนหมูกระทะ
+    function updateMookata(change) {
+        mookataCount += change;
+        if(mookataCount < 0) mookataCount = 0;
+        document.getElementById('mookataQty').innerText = mookataCount;
+        calculateTotal();
+    }
+
+    // คำนวณราคารวม
+    function calculateTotal() {
+        const roomPrice = parseInt(document.getElementById('selectedRoomPrice').value);
+        const mookataPrice = mookataCount * 499;
+        const total = roomPrice + mookataPrice;
+        document.getElementById('totalPriceDisplay').innerText = '฿' + total.toLocaleString();
+        return total;
     }
 
     async function submitBooking() {
@@ -136,6 +187,9 @@
         const roomType = document.getElementById("selectedRoom").value;
         const roomImgUrl = document.getElementById('selectedRoomImg').value;
         const btn = document.getElementById("submitBtn");
+        
+        // ข้อมูลการเงิน
+        const totalPrice = calculateTotal();
 
         if(!guestName || !checkIn || !checkOut || !phone) {
             Swal.fire({ icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณากรอกให้ครบทุกช่องครับ', background: '#1a1a2e', color: '#fff', confirmButtonColor: '#f39c12' });
@@ -145,14 +199,15 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังประมวลผล...';
         btn.disabled = true;
 
-        const randomNum = Math.floor(100000 + Math.random() * 900000);
-        const bookingId = "BK-" + randomNum;
+        const bookingId = "BK-" + Math.floor(100000 + Math.random() * 900000);
 
         // บันทึกลง Supabase
         const { error } = await supabaseClient.from('bookings').insert([{ 
             user_id: userProfile ? userProfile.userId : 'web-user',
             display_name: guestName, check_in: checkIn, check_out: checkOut, phone: phone,
-            booking_id: bookingId, room_type: roomType
+            booking_id: bookingId, room_type: roomType,
+            mookata_qty: mookataCount,  // ✅ บันทึกจำนวนหมูกระทะ
+            total_price: totalPrice     // ✅ บันทึกยอดรวม
         }]);
 
         if (error) {
@@ -160,15 +215,22 @@
             btn.innerHTML = 'ยืนยันการจอง <i class="fas fa-arrow-right"></i>';
             btn.disabled = false;
         } else {
-            // แจ้งเตือนแอดมิน
+            // แจ้งเตือนแอดมิน (ส่งข้อมูลการเงินไปด้วย)
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ bookingId: bookingId, userId: userProfile ? userProfile.userId : 'web-test', name: guestName, phone: phone, checkIn: checkIn, checkOut: checkOut, room: roomType })
+                body: JSON.stringify({ 
+                    bookingId: bookingId, userId: userProfile ? userProfile.userId : 'web-test', 
+                    name: guestName, phone: phone, checkIn: checkIn, checkOut: checkOut, 
+                    room: roomType, mookataQty: mookataCount, totalPrice: totalPrice 
+                })
             }).catch(err => console.error("Notify Error", err));
 
-            // ✅ ส่งการ์ดสวยๆ ให้ลูกค้าในแชท (ไว้โชว์พนักงาน)
+            // ✅ ส่งใบเสร็จสวยๆ ให้ลูกค้าในแชท
             if (userProfile) {
                 try {
+                    // สร้างข้อความรายการเสริม
+                    let addonText = mookataCount > 0 ? `หมูกระทะ ${mookataCount} ชุด` : "ไม่มีบริการเสริม";
+
                     await liff.sendMessages([{
                         type: 'flex',
                         altText: 'ใบยืนยันการจอง ' + bookingId,
@@ -180,28 +242,29 @@
                                 "contents": [
                                     {
                                         "type": "box", "layout": "vertical", "contents": [
-                                            { "type": "text", "text": "ORDER RECEIVED", "weight": "bold", "color": "#FFFFFF", "size": "xl" },
+                                            { "type": "text", "text": "BOOKING CONFIRMED", "weight": "bold", "color": "#FFFFFF", "size": "lg" },
                                             { "type": "text", "text": "ID: " + bookingId, "color": "#FFFFFFcc", "size": "sm", "margin": "sm" }
-                                        ], "paddingAll": "lg",
-                                        "background": { "type": "linearGradient", "angle": "90deg", "startColor": "#00f260", "endColor": "#0575E6" }
+                                        ], "paddingAll": "lg", "background": { "type": "linearGradient", "angle": "90deg", "startColor": "#00f260", "endColor": "#0575E6" }
                                     },
                                     {
                                         "type": "box", "layout": "vertical", "paddingAll": "lg", "spacing": "md",
                                         "contents": [
-                                            { "type": "text", "text": roomType, "weight": "bold", "size": "xxl", "color": "#333333" },
+                                            { "type": "text", "text": roomType, "weight": "bold", "size": "xl", "color": "#333333" },
                                             { "type": "separator" },
+                                            // รายละเอียดบิล
                                             { "type": "box", "layout": "vertical", "spacing": "sm", "contents": [
                                                 { "type": "box", "layout": "baseline", "contents": [{ "type": "text", "text": "ผู้จอง:", "color": "#aaaaaa", "size": "sm", "flex": 2 }, { "type": "text", "text": guestName, "color": "#333333", "size": "sm", "flex": 4 }] },
-                                                { "type": "box", "layout": "baseline", "contents": [{ "type": "text", "text": "วันที่:", "color": "#aaaaaa", "size": "sm", "flex": 2 }, { "type": "text", "text": `${checkIn} - ${checkOut}`, "color": "#333333", "size": "sm", "flex": 4 }] }
+                                                { "type": "box", "layout": "baseline", "contents": [{ "type": "text", "text": "วันที่:", "color": "#aaaaaa", "size": "sm", "flex": 2 }, { "type": "text", "text": `${checkIn} - ${checkOut}`, "color": "#333333", "size": "sm", "flex": 4 }] },
+                                                { "type": "box", "layout": "baseline", "contents": [{ "type": "text", "text": "บริการเสริม:", "color": "#aaaaaa", "size": "sm", "flex": 2 }, { "type": "text", "text": addonText, "color": "#333333", "size": "sm", "flex": 4 }] }
+                                            ]},
+                                            { "type": "separator" },
+                                            { "type": "box", "layout": "baseline", "contents": [
+                                                { "type": "text", "text": "ยอดสุทธิ", "weight": "bold", "size": "md", "flex": 1, "color": "#333333" },
+                                                { "type": "text", "text": "฿" + totalPrice.toLocaleString(), "weight": "bold", "size": "xl", "align": "end", "color": "#00f260", "flex": 1 }
                                             ]}
                                         ]
                                     }
                                 ]
-                            },
-                            "footer": {
-                                "type": "box", "layout": "vertical", "contents": [
-                                    { "type": "text", "text": "โปรดแสดงหน้านี้ต่อเจ้าหน้าที่เพื่อยืนยัน", "size": "xs", "color": "#aaaaaa", "align": "center" }
-                                ], "paddingAll": "md", "backgroundColor": "#f0f0f0"
                             }
                         }
                     }]);
@@ -209,7 +272,7 @@
             }
 
             Swal.fire({
-                icon: 'success', title: 'จองสำเร็จ!', html: `รหัสรายการ: <b style="color:#00f260; font-size:1.2em;">${bookingId}</b><br>ส่งใบยืนยันเข้าแชทเรียบร้อยแล้วครับ`, background: '#1a1a2e', color: '#fff', timer: 3000, showConfirmButton: false
+                icon: 'success', title: 'จองสำเร็จ!', html: `รหัสรายการ: <b style="color:#00f260;">${bookingId}</b><br>ยอดรวม: <b>฿${totalPrice.toLocaleString()}</b>`, background: '#1a1a2e', color: '#fff', timer: 3000, showConfirmButton: false
             }).then(() => { liff.closeWindow(); });
         }
     }
