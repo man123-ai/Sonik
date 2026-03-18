@@ -3,192 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Man vs Anger Boss</title>
+    <title>WARNING: MAN_VIRUS_DETECTED</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Anuphan:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Anuphan:wght@600&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #1a1a1a;
-            color: #fff;
-            font-family: 'Anuphan', sans-serif;
+            background-color: #050505;
+            color: #00ff41;
+            font-family: 'Fira Code', monospace;
             overflow: hidden;
             height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .retro-font { font-family: 'Press Start 2P', cursive; }
-
-        .game-container {
-            border: 4px solid #fff;
-            padding: 2rem;
-            background: #000;
-            box-shadow: 10px 10px 0px #ff4d6d;
-            max-width: 500px;
-            width: 90%;
+        .hacker-card {
+            border: 1px solid #00ff41;
+            background: rgba(0, 40, 0, 0.9);
+            box-shadow: 0 0 20px #00ff41;
             position: relative;
+            z-index: 10;
         }
 
-        .hp-bar-bg {
-            width: 100%;
-            height: 20px;
-            background: #444;
-            border: 2px solid #fff;
-            margin-bottom: 10px;
+        .glitch-text {
+            animation: glitch 1s linear infinite;
         }
 
-        #hp-fill {
-            width: 100%;
-            height: 100%;
-            background: #ff0000;
-            transition: width 0.3s ease;
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px,0) skew(0deg); }
+            4%, 60% { transform: translate(-2px,0) skew(0deg); }
+            62% { transform: translate(0,0) skew(5deg); }
         }
 
-        .btn-retro {
-            border: 4px solid #fff;
-            padding: 10px 20px;
-            background: #000;
-            transition: all 0.1s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .btn-retro:active {
-            transform: translate(4px, 4px);
-            box-shadow: none;
-        }
-
-        .btn-yes {
-            box-shadow: 6px 6px 0px #00ff00;
-            color: #00ff00;
-        }
-
-        .btn-no {
-            box-shadow: 6px 6px 0px #ff0000;
-            color: #ff0000;
-        }
-
-        /* ร่างแยกปุ่ม No */
-        .decoy {
+        .pop-up {
             position: fixed;
-            z-index: 50;
-            pointer-events: auto;
+            background: #ff0055;
+            color: white;
+            padding: 10px 20px;
+            border: 2px solid white;
+            font-size: 12px;
+            z-index: 100;
+            pointer-events: none;
+            box-shadow: 5px 5px 0px #000;
         }
 
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            100% { transform: translate(1px, 1px) rotate(0deg); }
+        .btn-hacker {
+            border: 1px solid #00ff41;
+            padding: 10px;
+            transition: all 0.2s;
         }
 
-        .shaking { animation: shake 0.5s infinite; }
+        .btn-hacker:hover {
+            background: #00ff41;
+            color: #000;
+        }
+
+        #matrix-bg {
+            position: fixed;
+            top: 0; left: 0; z-index: 1;
+            opacity: 0.15;
+        }
     </style>
 </head>
-<body>
+<body class="flex items-center justify-center">
 
-    <div class="game-container" id="gameBox">
-        <div id="battle-ui">
-            <div class="flex justify-between mb-2">
-                <span class="retro-font text-[10px]">BOSS: ความโกรธของเธอ</span>
-                <span class="retro-font text-[10px]" id="hp-text">HP: 100/100</span>
-            </div>
-            <div class="hp-bar-bg">
-                <div id="hp-fill"></div>
-            </div>
+    <canvas id="matrix-bg"></canvas>
 
-            <div class="py-10 text-center">
-                <div id="boss-sprite" class="text-6xl mb-4">💢</div>
-                <p class="text-lg">แมนใช้สกิล "ง้อขั้นสุด"!</p>
-                <p class="text-gray-400 text-xs mt-2">เธอจะยอมรับคำขอโทษไหม?</p>
+    <div class="hacker-card p-8 max-w-md w-full mx-5 text-center" id="mainContainer">
+        <div id="content">
+            <h1 class="text-2xl mb-4 glitch-text font-bold">[!] SYSTEM_OVERRIDE_BY_MAN</h1>
+            
+            <div class="text-left text-xs mb-6 space-y-1 text-green-300 opacity-80">
+                <p>> Initializing apology.exe...</p>
+                <p>> Checking status: <span class="text-yellow-400">VERY_ANGRY</span></p>
+                <p>> Scanning heart... [100% Love Detected]</p>
+                <p>> Error: Cannot live without her.</p>
             </div>
 
-            <div class="grid grid-cols-1 gap-6">
-                <button onclick="attackBoss()" class="btn-retro btn-yes retro-font text-xs">
-                    ยอมให้อภัย (ATTACK!)
+            <p class="mb-8 font-sans text-white text-lg font-bold">
+                กดยอมรับคำขอโทษเดี๋ยวนี้ <br>
+                ก่อนที่คอมจะกลายเป็นสีชมพู! 💖
+            </p>
+
+            <div class="space-y-4">
+                <button id="yesBtn" onclick="hacked()" class="btn-hacker w-full font-bold">
+                    EXE.ACCEPT_APOLOGY (ยอมรับ)
                 </button>
-                <div class="h-12 relative">
-                    <button id="noBtn" onmouseover="glitchRun()" class="btn-retro btn-no retro-font text-xs absolute left-0 right-0 mx-auto w-full">
-                        ไม่! งอนต่อ
+                <div class="h-10 relative">
+                    <button id="noBtn" onmouseover="annoy()" class="btn-hacker w-32 text-xs absolute left-0 right-0 mx-auto text-red-500 border-red-500">
+                        DENY (งอนต่อ)
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="victory-ui" class="hidden text-center py-10">
-            <div class="text-7xl mb-6">💖</div>
-            <h1 class="retro-font text-xl text-green-400 mb-4">VICTORY!</h1>
-            <p>ความโกรธถูกทำลายสิ้นซาก!</p>
-            <p class="text-pink-400 mt-4">แมนหลอกหมาได้อีกแล้วโว๊ยย</p>
-            <button onclick="location.reload()" class="mt-8 text-[10px] retro-font text-gray-500 underline">PLAY AGAIN?</button>
+        <div id="success" class="hidden">
+            <h2 class="text-3xl font-bold mb-4">ACCESS GRANTED!</h2>
+            <p class="text-white mb-6">ไวรัส "รักแมน" ได้ติดตั้งลงในหัวใจเธอแล้ว</p>
+            <div class="text-xs text-left bg-black p-4 rounded border border-green-500">
+                <p class="text-pink-400">> status: In Love</p>
+                <p class="text-pink-400">> task: Go on a date</p>
+                <p class="text-pink-400">> message: ไอ้ตูด!</p>
+            </div>
         </div>
     </div>
 
     <script>
-        let hp = 100;
-        const hpFill = document.getElementById('hp-fill');
-        const hpText = document.getElementById('hp-text');
-        const bossSprite = document.getElementById('boss-sprite');
-        const gameBox = document.getElementById('gameBox');
+        // Matrix Effect
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = "MANLOVEU10101010";
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
 
-        function attackBoss() {
-            hp -= 25;
-            if (hp < 0) hp = 0;
-            
-            hpFill.style.width = hp + '%';
-            hpText.innerText = `HP: ${hp}/100`;
-            
-            // เอฟเฟกต์สั่นเวลาโดนโจมตี
-            gameBox.classList.add('shaking');
-            setTimeout(() => gameBox.classList.remove('shaking'), 200);
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0f0";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
 
-            if (hp <= 50) bossSprite.innerText = '🥺';
-            if (hp <= 0) victory();
+        // Annoying Function
+        let annoyanceLevel = 0;
+        const messages = [
+            "ยังจะกดอีก!", "ใจร้ายจังไอ้จิ๋ว", "Error: 404 Heart Not Found", 
+            "คอมจะพังแล้วนะ!", "ยอมเถอะน่า แมนหล่อจะตาย", "กดปุ่มข้างบนสิ!"
+        ];
+
+        function annoy() {
+            const btn = document.getElementById('noBtn');
+            const yesBtn = document.getElementById('yesBtn');
+            
+            // ย้ายปุ่ม
+            btn.style.left = Math.random() * 80 + '%';
+            btn.style.top = Math.random() * 200 + 'px';
+            
+            // สุ่ม Pop-up
+            const popup = document.createElement('div');
+            popup.className = 'pop-up';
+            popup.innerText = messages[Math.floor(Math.random() * messages.length)];
+            popup.style.left = Math.random() * 80 + 'vw';
+            popup.style.top = Math.random() * 80 + 'vh';
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 2000);
+
+            // กวนประสาท: ขยายปุ่ม YES จนแทบเบียดที่
+            annoyanceLevel += 5;
+            yesBtn.style.padding = (10 + annoyanceLevel) + 'px';
+            yesBtn.innerText = "กดยอมรับตรงนี้สิโว้ยยย!";
         }
 
-        function victory() {
-            document.getElementById('battle-ui').classList.add('hidden');
-            document.getElementById('victory-ui').classList.remove('hidden');
+        function hacked() {
+            document.getElementById('content').classList.add('hidden');
+            document.getElementById('success').classList.remove('hidden');
+            document.body.style.backgroundColor = "#2d0015";
             
             confetti({
-                particleCount: 150,
-                spread: 70,
+                particleCount: 200,
+                spread: 90,
                 origin: { y: 0.6 },
-                colors: ['#00ff00', '#ff4d6d', '#ffffff']
+                colors: ['#00ff41', '#ff0055', '#ffffff']
             });
-        }
-
-        function glitchRun() {
-            const btn = document.getElementById('noBtn');
-            
-            // ย้ายตำแหน่งปุ่มจริง
-            const x = (Math.random() - 0.5) * 300;
-            const y = (Math.random() - 0.5) * 300;
-            btn.style.transform = `translate(${x}px, ${y}px)`;
-
-            // สร้างร่างแยก (Decoy)
-            createDecoy();
-        }
-
-        function createDecoy() {
-            const decoy = document.createElement('button');
-            decoy.innerText = 'ไม่!';
-            decoy.className = 'btn-retro btn-no retro-font text-[8px] decoy';
-            decoy.style.left = Math.random() * 80 + 10 + 'vw';
-            decoy.style.top = Math.random() * 80 + 10 + 'vh';
-            
-            document.body.appendChild(decoy);
-
-            // ร่างแยกจะหายไปเองใน 1 วินาที
-            setTimeout(() => decoy.remove(), 1000);
-
-            // ถ้าเผลอกดโดนร่างแยก
-            decoy.onclick = () => {
-                alert("กดผิด! นี่มันร่างแยก 😜");
-                decoy.remove();
-            };
         }
     </script>
 </body>
