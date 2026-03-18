@@ -3,176 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WARNING: MAN_VIRUS_DETECTED</title>
+    <title>System Error: Love.exe</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Anuphan:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #050505;
-            color: #00ff41;
-            font-family: 'Fira Code', monospace;
+            background-color: #008080; /* สีพื้นหลัง Windows 98 */
+            font-family: 'Tahoma', 'Anuphan', sans-serif;
             overflow: hidden;
             height: 100vh;
+            margin: 0;
+            user-select: none;
         }
 
-        .hacker-card {
-            border: 1px solid #00ff41;
-            background: rgba(0, 40, 0, 0.9);
-            box-shadow: 0 0 20px #00ff41;
-            position: relative;
-            z-index: 10;
+        /* สไตล์หน้าต่างแบบ Windows เก่า */
+        .win-box {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            position: absolute;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            min-width: 300px;
         }
 
-        .glitch-text {
-            animation: glitch 1s linear infinite;
-        }
-
-        @keyframes glitch {
-            2%, 64% { transform: translate(2px,0) skew(0deg); }
-            4%, 60% { transform: translate(-2px,0) skew(0deg); }
-            62% { transform: translate(0,0) skew(5deg); }
-        }
-
-        .pop-up {
-            position: fixed;
-            background: #ff0055;
+        .win-title {
+            background: #000080;
             color: white;
-            padding: 10px 20px;
-            border: 2px solid white;
+            padding: 3px 5px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .win-title-pink {
+            background: #ff4d6d;
+        }
+
+        .win-btn {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #ffffff #808080 #808080 #ffffff;
+            padding: 5px 15px;
             font-size: 12px;
-            z-index: 100;
-            pointer-events: none;
-            box-shadow: 5px 5px 0px #000;
+            cursor: pointer;
+            outline: none;
         }
 
-        .btn-hacker {
-            border: 1px solid #00ff41;
-            padding: 10px;
-            transition: all 0.2s;
+        .win-btn:active {
+            border-color: #808080 #ffffff #ffffff #808080;
+            padding: 6px 14px 4px 16px; /* ขยับตอนกด */
         }
 
-        .btn-hacker:hover {
-            background: #00ff41;
-            color: #000;
-        }
-
-        #matrix-bg {
+        /* หน้าจอมรณะสีชมพู (Pink Screen of Death) */
+        #psod {
+            background-color: #ff4d6d;
+            color: white;
+            font-family: monospace;
+            padding: 2rem;
             position: fixed;
-            top: 0; left: 0; z-index: 1;
-            opacity: 0.15;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9999;
+            display: none;
         }
     </style>
 </head>
-<body class="flex items-center justify-center">
+<body>
 
-    <canvas id="matrix-bg"></canvas>
-
-    <div class="hacker-card p-8 max-w-md w-full mx-5 text-center" id="mainContainer">
-        <div id="content">
-            <h1 class="text-2xl mb-4 glitch-text font-bold">[!] SYSTEM_OVERRIDE_BY_MAN</h1>
-            
-            <div class="text-left text-xs mb-6 space-y-1 text-green-300 opacity-80">
-                <p>> Initializing apology.exe...</p>
-                <p>> Checking status: <span class="text-yellow-400">VERY_ANGRY</span></p>
-                <p>> Scanning heart... [100% Love Detected]</p>
-                <p>> Error: Cannot live without her.</p>
-            </div>
-
-            <p class="mb-8 font-sans text-white text-lg font-bold">
-                กดยอมรับคำขอโทษเดี๋ยวนี้ <br>
-                ก่อนที่คอมจะกลายเป็นสีชมพู! 💖
-            </p>
-
-            <div class="space-y-4">
-                <button id="yesBtn" onclick="hacked()" class="btn-hacker w-full font-bold">
-                    EXE.ACCEPT_APOLOGY (ยอมรับ)
-                </button>
-                <div class="h-10 relative">
-                    <button id="noBtn" onmouseover="annoy()" class="btn-hacker w-32 text-xs absolute left-0 right-0 mx-auto text-red-500 border-red-500">
-                        DENY (งอนต่อ)
-                    </button>
-                </div>
-            </div>
+    <div class="win-box" id="mainWindow" style="top: 30%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
+        <div class="win-title">
+            <span>⚠️ ERROR: ความสัมพันธ์.exe ขัดข้อง</span>
+            <span class="bg-gray-300 text-black px-1 border border-white cursor-pointer hover:bg-red-500 hover:text-white">X</span>
         </div>
-
-        <div id="success" class="hidden">
-            <h2 class="text-3xl font-bold mb-4">ACCESS GRANTED!</h2>
-            <p class="text-white mb-6">ไวรัส "รักแมน" ได้ติดตั้งลงในหัวใจเธอแล้ว</p>
-            <div class="text-xs text-left bg-black p-4 rounded border border-green-500">
-                <p class="text-pink-400">> status: In Love</p>
-                <p class="text-pink-400">> task: Go on a date</p>
-                <p class="text-pink-400">> message: ไอ้ตูด!</p>
+        <div class="p-4 flex gap-4 items-start">
+            <div class="text-4xl">🛑</div>
+            <div>
+                <p class="mb-2 text-sm font-bold">ระบบตรวจพบว่า 'แมน' ทำตัวน่าตี!</p>
+                <p class="text-xs mb-4">สถานะปัจจุบัน: แฟนงอนระดับสูงสุด<br>คุณต้องการรันโปรแกรม "ให้อภัยแมน" หรือไม่?</p>
+                
+                <div class="flex gap-2 justify-center mt-6">
+                    <button class="win-btn font-bold" onclick="showPSOD()">ตกลง (ให้อภัย)</button>
+                    <button class="win-btn" onclick="spawnPopup()">ยกเลิก (งอนต่อ)</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <div id="psod">
+        <h1 class="text-2xl font-bold bg-white text-[#ff4d6d] inline-block px-2 mb-4"> MAN_LOVE_SYSTEM_RESTORED </h1>
+        <p class="mb-2">A fatal exception 0E has occurred at 0028:C0011E36 in VXD VMM(01) + 00010E36.</p>
+        <p class="mb-4">The current process will be terminated.</p>
+        
+        <p class="mb-2">* ระบบได้รับการฟื้นฟูด้วยความรัก 100%</p>
+        <p class="mb-2">* สถานะการงอน: ถูกลบออกจากระบบอย่างถาวร</p>
+        <p class="mb-8">* ข้อความจากเซิร์ฟเวอร์: "ดีกันนะ แมนรักเธอที่สุดเลยไอ้จิ๋ว!"</p>
+        
+        <p class="animate-pulse">Press any key to hug Man...</p>
+    </div>
+
     <script>
-        // Matrix Effect
-        const canvas = document.getElementById('matrix-bg');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const letters = "MANLOVEU10101010";
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-
-        function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0f0";
-            ctx.font = fontSize + "px monospace";
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters.charAt(Math.floor(Math.random() * letters.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
-        }
-        setInterval(drawMatrix, 33);
-
-        // Annoying Function
-        let annoyanceLevel = 0;
-        const messages = [
-            "ยังจะกดอีก!", "ใจร้ายจังไอ้จิ๋ว", "Error: 404 Heart Not Found", 
-            "คอมจะพังแล้วนะ!", "ยอมเถอะน่า แมนหล่อจะตาย", "กดปุ่มข้างบนสิ!"
+        // ข้อความกวนๆ สำหรับหน้าต่าง Pop-up
+        const errorMessages = [
+            "ระบบไม่อนุญาตให้งอนนานเกินไป!",
+            "Warning: คิดดีๆ นะ แมนมันน่ารักนะโว้ย",
+            "Error 404: หาเหตุผลที่จะโกรธต่อไม่เจอ",
+            "ไฟล์ 'ความโกรธ' กำลังจะถูกลบทิ้ง...",
+            "กดยกเลิกอีกแล้ว! ใจแข็งไปไหนเนี่ยยย",
+            "ยอมเถอะะะ แมนขอโทษษษ 🥺",
+            "กดปุ่มตกลงเถอะ นิ้วจะได้ไม่ล็อก",
+            "แฮกเกอร์แมนกำลังเจาะระบบหัวใจคุณ!"
         ];
 
-        function annoy() {
-            const btn = document.getElementById('noBtn');
-            const yesBtn = document.getElementById('yesBtn');
-            
-            // ย้ายปุ่ม
-            btn.style.left = Math.random() * 80 + '%';
-            btn.style.top = Math.random() * 200 + 'px';
-            
-            // สุ่ม Pop-up
-            const popup = document.createElement('div');
-            popup.className = 'pop-up';
-            popup.innerText = messages[Math.floor(Math.random() * messages.length)];
-            popup.style.left = Math.random() * 80 + 'vw';
-            popup.style.top = Math.random() * 80 + 'vh';
-            document.body.appendChild(popup);
-            setTimeout(() => popup.remove(), 2000);
+        let zIndexCounter = 100;
 
-            // กวนประสาท: ขยายปุ่ม YES จนแทบเบียดที่
-            annoyanceLevel += 5;
-            yesBtn.style.padding = (10 + annoyanceLevel) + 'px';
-            yesBtn.innerText = "กดยอมรับตรงนี้สิโว้ยยย!";
+        function spawnPopup() {
+            // สร้างหน้าต่างใหม่
+            const popup = document.createElement('div');
+            popup.className = 'win-box';
+            
+            // สุ่มตำแหน่งให้อยู่ในจอ
+            const x = Math.random() * (window.innerWidth - 250);
+            const y = Math.random() * (window.innerHeight - 150);
+            
+            popup.style.left = `${x}px`;
+            popup.style.top = `${y}px`;
+            popup.style.zIndex = zIndexCounter++;
+            
+            // สุ่มข้อความ
+            const msg = errorMessages[Math.floor(Math.random() * errorMessages.length)];
+            
+            popup.innerHTML = `
+                <div class="win-title win-title-pink">
+                    <span>💬 System Message</span>
+                    <span class="bg-gray-300 text-black px-1 border border-white cursor-pointer hover:bg-red-500 hover:text-white" onclick="this.parentElement.parentElement.remove()">X</span>
+                </div>
+                <div class="p-4 text-center">
+                    <p class="text-sm mb-4">${msg}</p>
+                    <button class="win-btn" onclick="spawnPopup()">ปิดไม่ได้หรอก แบร่!</button>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
         }
 
-        function hacked() {
-            document.getElementById('content').classList.add('hidden');
-            document.getElementById('success').classList.remove('hidden');
-            document.body.style.backgroundColor = "#2d0015";
+        function showPSOD() {
+            // ลบหน้าต่างเกะกะออกให้หมด
+            document.querySelectorAll('.win-box').forEach(el => el.remove());
             
-            confetti({
-                particleCount: 200,
-                spread: 90,
-                origin: { y: 0.6 },
-                colors: ['#00ff41', '#ff0055', '#ffffff']
-            });
+            // โชว์หน้าจอสีชมพู
+            const psod = document.getElementById('psod');
+            psod.style.display = 'block';
+            
+            // ยิง Confetti รัวๆ
+            const end = Date.now() + 4000;
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ffffff', '#ffb3c6']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ffffff', '#ffb3c6']
+                });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
         }
     </script>
 </body>
