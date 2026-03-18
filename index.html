@@ -3,197 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ง้อนะครับคนดี - Interactive Edition</title>
+    <title>Player Man vs Anger Boss</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Anuphan:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
+            background-color: #1a1a1a;
+            color: #fff;
             font-family: 'Anuphan', sans-serif;
-            background: #ffffff;
-            margin: 0;
             overflow: hidden;
             height: 100vh;
-            cursor: none; /* ใช้ Cursor จำลองแทน */
-        }
-
-        #custom-cursor {
-            width: 20px;
-            height: 20px;
-            background: rgba(255, 77, 109, 0.3);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.1s ease;
-        }
-
-        .main-container {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            text-align: center;
         }
 
-        .title-reveal {
-            font-size: 5rem;
-            font-weight: 700;
-            line-height: 1;
-            color: #1a1a1a;
-            margin-bottom: 1rem;
-            overflow: hidden;
+        .retro-font { font-family: 'Press Start 2P', cursive; }
+
+        .game-container {
+            border: 4px solid #fff;
+            padding: 2rem;
+            background: #000;
+            box-shadow: 10px 10px 0px #ff4d6d;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
         }
 
-        .btn-container {
-            margin-top: 3rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+        .hp-bar-bg {
+            width: 100%;
+            height: 20px;
+            background: #444;
+            border: 2px solid #fff;
+            margin-bottom: 10px;
         }
 
-        #yesBtn {
-            background: #ff4d6d;
-            color: white;
-            padding: 1.5rem 3rem;
-            border-radius: 5rem;
-            font-weight: 700;
-            font-size: 1.2rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.3);
+        #hp-fill {
+            width: 100%;
+            height: 100%;
+            background: #ff0000;
+            transition: width 0.3s ease;
         }
 
-        #noBtn {
-            color: #9ca3af;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            padding: 10px;
+        .btn-retro {
+            border: 4px solid #fff;
+            padding: 10px 20px;
+            background: #000;
+            transition: all 0.1s;
+            cursor: pointer;
+            position: relative;
         }
 
-        .floating-emoji {
-            position: absolute;
-            pointer-events: none;
-            font-size: 1.5rem;
-            opacity: 0.5;
+        .btn-retro:active {
+            transform: translate(4px, 4px);
+            box-shadow: none;
         }
+
+        .btn-yes {
+            box-shadow: 6px 6px 0px #00ff00;
+            color: #00ff00;
+        }
+
+        .btn-no {
+            box-shadow: 6px 6px 0px #ff0000;
+            color: #ff0000;
+        }
+
+        /* ร่างแยกปุ่ม No */
+        .decoy {
+            position: fixed;
+            z-index: 50;
+            pointer-events: auto;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            100% { transform: translate(1px, 1px) rotate(0deg); }
+        }
+
+        .shaking { animation: shake 0.5s infinite; }
     </style>
 </head>
 <body>
 
-    <div id="custom-cursor"></div>
-
-    <div class="main-container" id="mainScene">
-        <div id="content">
-            <div class="title-reveal">
-                <span id="text-main">ขอโทษนะ</span>
+    <div class="game-container" id="gameBox">
+        <div id="battle-ui">
+            <div class="flex justify-between mb-2">
+                <span class="retro-font text-[10px]">BOSS: ความโกรธของเธอ</span>
+                <span class="retro-font text-[10px]" id="hp-text">HP: 100/100</span>
             </div>
-            <p class="text-gray-400 text-lg max-w-xs mx-auto" id="text-sub">
-                แมนรู้ตัวว่าทำตัวไม่น่ารัก... <br>ขอโอกาสแก้ตัวอีกครั้งได้ไหมครับ?
-            </p>
+            <div class="hp-bar-bg">
+                <div id="hp-fill"></div>
+            </div>
 
-            <div class="btn-container">
-                <button id="yesBtn" onclick="celebrate()">
-                    หายงอนแล้ว ✨
+            <div class="py-10 text-center">
+                <div id="boss-sprite" class="text-6xl mb-4">💢</div>
+                <p class="text-lg">แมนใช้สกิล "ง้อขั้นสุด"!</p>
+                <p class="text-gray-400 text-xs mt-2">เธอจะยอมรับคำขอโทษไหม?</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6">
+                <button onclick="attackBoss()" class="btn-retro btn-yes retro-font text-xs">
+                    ยอมให้อภัย (ATTACK!)
                 </button>
-                <button id="noBtn" onmouseover="dodge()">
-                    ยังงอนอยู่มากก!
-                </button>
+                <div class="h-12 relative">
+                    <button id="noBtn" onmouseover="glitchRun()" class="btn-retro btn-no retro-font text-xs absolute left-0 right-0 mx-auto w-full">
+                        ไม่! งอนต่อ
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div id="success" class="hidden">
-            <h1 class="text-6xl font-bold text-[#ff4d6d] mb-4">เย้! ❤️</h1>
-            <p class="text-gray-500">สัญญาว่าจะดูแลให้ดีกว่าเดิม 1,000 เท่า!</p>
+        <div id="victory-ui" class="hidden text-center py-10">
+            <div class="text-7xl mb-6">💖</div>
+            <h1 class="retro-font text-xl text-green-400 mb-4">VICTORY!</h1>
+            <p>ความโกรธถูกทำลายสิ้นซาก!</p>
+            <p class="text-pink-400 mt-4">แมนหลอกหมาได้อีกแล้วโว๊ยย</p>
+            <button onclick="location.reload()" class="mt-8 text-[10px] retro-font text-gray-500 underline">PLAY AGAIN?</button>
         </div>
     </div>
 
     <script>
-        // Cursor ตามเมาส์
-        const cursor = document.getElementById('custom-cursor');
-        window.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, {
-                x: e.clientX - 10,
-                y: e.clientY - 10,
-                duration: 0.5,
-                ease: "power3.out"
-            });
-        });
+        let hp = 100;
+        const hpFill = document.getElementById('hp-fill');
+        const hpText = document.getElementById('hp-text');
+        const bossSprite = document.getElementById('boss-sprite');
+        const gameBox = document.getElementById('gameBox');
 
-        // ลูกเล่นปุ่มหนี + ปุ่ม YES ขยายใหญ่
-        let scale = 1;
-        function dodge() {
-            const noBtn = document.getElementById('noBtn');
-            const yesBtn = document.getElementById('yesBtn');
+        function attackBoss() {
+            hp -= 25;
+            if (hp < 0) hp = 0;
             
-            // สุ่มตำแหน่งปุ่ม NO
+            hpFill.style.width = hp + '%';
+            hpText.innerText = `HP: ${hp}/100`;
+            
+            // เอฟเฟกต์สั่นเวลาโดนโจมตี
+            gameBox.classList.add('shaking');
+            setTimeout(() => gameBox.classList.remove('shaking'), 200);
+
+            if (hp <= 50) bossSprite.innerText = '🥺';
+            if (hp <= 0) victory();
+        }
+
+        function victory() {
+            document.getElementById('battle-ui').classList.add('hidden');
+            document.getElementById('victory-ui').classList.remove('hidden');
+            
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#00ff00', '#ff4d6d', '#ffffff']
+            });
+        }
+
+        function glitchRun() {
+            const btn = document.getElementById('noBtn');
+            
+            // ย้ายตำแหน่งปุ่มจริง
             const x = (Math.random() - 0.5) * 300;
             const y = (Math.random() - 0.5) * 300;
-            gsap.to(noBtn, { x: x, y: y, duration: 0.3 });
+            btn.style.transform = `translate(${x}px, ${y}px)`;
 
-            // ขยายปุ่ม YES บีบคั้นใจ
-            scale += 0.15;
-            gsap.to(yesBtn, { scale: scale, duration: 0.3 });
+            // สร้างร่างแยก (Decoy)
+            createDecoy();
+        }
+
+        function createDecoy() {
+            const decoy = document.createElement('button');
+            decoy.innerText = 'ไม่!';
+            decoy.className = 'btn-retro btn-no retro-font text-[8px] decoy';
+            decoy.style.left = Math.random() * 80 + 10 + 'vw';
+            decoy.style.top = Math.random() * 80 + 10 + 'vh';
             
-            // เปลี่ยนข้อความสุ่ม
-            const texts = ["กดปุ่มแดงเถอะ", "แว่บ!", "หนีล่ะนะ", "ใจร้ายจัง", "ทางนี้ๆ"];
-            noBtn.innerText = texts[Math.floor(Math.random() * texts.length)];
+            document.body.appendChild(decoy);
+
+            // ร่างแยกจะหายไปเองใน 1 วินาที
+            setTimeout(() => decoy.remove(), 1000);
+
+            // ถ้าเผลอกดโดนร่างแยก
+            decoy.onclick = () => {
+                alert("กดผิด! นี่มันร่างแยก 😜");
+                decoy.remove();
+            };
         }
-
-        // เอฟเฟกต์เฉลิมฉลอง
-        function celebrate() {
-            const content = document.getElementById('content');
-            const success = document.getElementById('success');
-            
-            gsap.to(content, { opacity: 0, y: -50, duration: 0.5, onComplete: () => {
-                content.classList.add('hidden');
-                success.classList.remove('hidden');
-                gsap.from(success, { opacity: 0, scale: 0.5, duration: 0.8, ease: "back.out(1.7)" });
-            }});
-
-            // ยิงพลุแบบกระจายทั่วจอ
-            const end = Date.now() + 3000;
-            (function frame() {
-                confetti({
-                    particleCount: 3,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: ['#ff4d6d', '#ff8fa3']
-                });
-                confetti({
-                    particleCount: 3,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: ['#ff4d6d', '#ff8fa3']
-                });
-                if (Date.now() < end) requestAnimationFrame(frame);
-            }());
-        }
-
-        // สร้าง Emoji ลอยๆ พื้นหลัง
-        function spawnEmoji() {
-            const emojis = ['❤️', '✨', '☁️', '🌸'];
-            const emoji = document.createElement('div');
-            emoji.className = 'floating-emoji';
-            emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            emoji.style.left = Math.random() * 100 + 'vw';
-            emoji.style.top = '110vh';
-            document.body.appendChild(emoji);
-
-            gsap.to(emoji, {
-                y: '-120vh',
-                x: (Math.random() - 0.5) * 200,
-                rotation: Math.random() * 360,
-                duration: 5 + Math.random() * 5,
-                ease: "none",
-                onComplete: () => emoji.remove()
-            });
-        }
-        setInterval(spawnEmoji, 1000);
     </script>
 </body>
 </html>
